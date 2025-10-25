@@ -1,0 +1,24 @@
+# 1) Create env (Python 3.10+ recommended)
+python -m venv .venv && source .venv/bin/activate
+
+# 2) Install deps
+pip install --upgrade pip
+pip install -r requirements.txt   # or see "Dependencies" if you don't use a requirements file
+
+# 3) Prepare data folders (edit paths as needed)
+export DATA_DIR=$PWD/data
+mkdir -p $DATA_DIR/jotai $DATA_DIR/juliet
+
+# 4) Run Jotai
+python orchestrate_final.py \
+  --dataset jotai \
+  --data-root $DATA_DIR/jotai \
+  --out runs/jotai-$(date +%Y%m%d-%H%M%S) \
+  --workers 8 --seed 42
+
+# 5) Run Juliet
+python orchestrate_final.py \
+  --dataset juliet \
+  --data-root $DATA_DIR/juliet \
+  --out runs/juliet-$(date +%Y%m%d-%H%M%S) \
+  --workers 8 --seed 42
