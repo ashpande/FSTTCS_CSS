@@ -1,0 +1,2 @@
+targets_fuzzed,targets_with_≥1_crash,pct_targets_with_crash_%,afl_seconds,selection
+116,0,0.0,600,manifest-all
