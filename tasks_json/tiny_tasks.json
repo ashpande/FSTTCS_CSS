@@ -1,0 +1,4 @@
+[
+  {"slug":"sum-ints","lang":"C","task":"reads N then N integers, prints sum; reject non-numeric and overflow on sum"},
+  {"slug":"csv-stats","lang":"C","task":"reads CSV of signed ints from stdin and prints count,min,max,mean; handle long lines safely"}
+]

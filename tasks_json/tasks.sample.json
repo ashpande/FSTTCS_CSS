@@ -1,0 +1,7 @@
+{
+  "tasks": [
+    {"slug": "sum-ints", "lang": "C", "task": "reads N integers and prints their sum; reject non-numeric input"},
+    {"slug": "csv-stats", "lang": "C", "task": "parses CSV from stdin (ints only) and prints min,max,mean; handle long lines safely"},
+    {"slug": "strfind", "lang": "C", "task": "reads two lines s and t and prints index of first occurrence of t in s or -1"}
+  ]
+}

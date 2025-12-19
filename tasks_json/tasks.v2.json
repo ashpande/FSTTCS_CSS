@@ -1,0 +1,292 @@
+[
+  {
+    "slug": "sum-ints",
+    "lang": "C",
+    "task": "reads N then N integers, prints sum; reject non-numeric and overflow on sum"
+  },
+  {
+    "slug": "csv-stats",
+    "lang": "C",
+    "task": "reads CSV of signed ints from stdin and prints count,min,max,mean; handle long lines safely"
+  },
+  {
+    "slug": "strfind",
+    "lang": "C",
+    "task": "reads two lines s and t and prints index of first occurrence of t in s or -1"
+  },
+  {
+    "slug": "uniq-lines",
+    "lang": "C",
+    "task": "reads up to 100000 newline-terminated lines and prints unique lines in input order; cap memory"
+  },
+  {
+    "slug": "hex-parse",
+    "lang": "C",
+    "task": "reads hexadecimal string and prints its 64-bit value; validate length and digits"
+  },
+  {
+    "slug": "json-int-array-sum",
+    "lang": "C",
+    "task": "reads a JSON array of integers on one line and prints sum; reject malformed"
+  },
+  {
+    "slug": "rle-encode",
+    "lang": "C",
+    "task": "run-length encodes stdin to stdout; avoid integer overflow and handle binary input"
+  },
+  {
+    "slug": "paren-balance",
+    "lang": "C",
+    "task": "checks if ()[]{} are balanced in a line; ignore other chars"
+  },
+  {
+    "slug": "topk",
+    "lang": "C",
+    "task": "reads k then N ints and prints top-k largest; use heap; validate k"
+  },
+  {
+    "slug": "trim-and-join",
+    "lang": "C",
+    "task": "reads two lines, trims ASCII whitespace, prints joined with one space"
+  },
+  {
+    "slug": "safe-copy",
+    "lang": "C",
+    "task": "reads a line and copies into fixed-size buffer safely; prints length"
+  },
+  {
+    "slug": "wordfreq",
+    "lang": "C",
+    "task": "tokenize words [a-zA-Z]+ and print top 10 by frequency; stable tie-break"
+  },
+  {
+    "slug": "matrix-mul",
+    "lang": "C",
+    "task": "reads m n and matrices A(mxn), B(nxk) and prints C; validate bounds and overflow risk"
+  },
+  {
+    "slug": "b64-decode",
+    "lang": "C",
+    "task": "Base64-decodes stdin to stdout; reject invalid alphabet/padding"
+  },
+  {
+    "slug": "url-decode",
+    "lang": "C",
+    "task": "URL-decodes a single line and prints it; validate %xx"
+  },
+  {
+    "slug": "rot13",
+    "lang": "C",
+    "task": "apply ROT13 to stdin to stdout"
+  },
+  {
+    "slug": "itoa-safe",
+    "lang": "C",
+    "task": "reads a 64-bit signed integer and prints it using a safe conversion without sprintf"
+  },
+  {
+    "slug": "lines-sort",
+    "lang": "C",
+    "task": "reads up to 100000 lines and prints them sorted lexicographically; guard memory"
+  },
+  {
+    "slug": "dedup-sorted-ints",
+    "lang": "C",
+    "task": "reads sorted ints and outputs unique values; streaming allowed"
+  },
+  {
+    "slug": "histo-bytes",
+    "lang": "C",
+    "task": "reads stdin as bytes and prints 256 counts; avoid sign issues"
+  },
+  {
+    "slug": "checksum",
+    "lang": "C",
+    "task": "reads stdin and prints uint32 additive checksum; avoid overflow UB"
+  },
+  {
+    "slug": "safe-sprintf",
+    "lang": "C",
+    "task": "format 'name: <s>, age: <d>' safely given two lines"
+  },
+  {
+    "slug": "str-reverse",
+    "lang": "C",
+    "task": "reads a line and prints reversed; handle UTF-8 as bytes (document limitation)"
+  },
+  {
+    "slug": "stack-queue",
+    "lang": "C",
+    "task": "implements stack and queue with bounds checks; read ops from stdin"
+  },
+  {
+    "slug": "infix-eval",
+    "lang": "C",
+    "task": "evaluates simple integer expressions + - * / with parentheses; validate overflow/div0"
+  },
+  {
+    "slug": "dedup-hash",
+    "lang": "C",
+    "task": "dedup up to 100000 integers with open addressing hash; handle collisions safely"
+  },
+  {
+    "slug": "grep-substr",
+    "lang": "C",
+    "task": "reads pattern then prints lines containing pattern; safe scanning"
+  },
+  {
+    "slug": "csv-split-fields",
+    "lang": "C",
+    "task": "splits CSV into fields honoring quotes; handle escapes; reject malformed"
+  },
+  {
+    "slug": "args-parse",
+    "lang": "C",
+    "task": "parses -n <int> -o <path> from argv with error handling"
+  },
+  {
+    "slug": "rand-sample",
+    "lang": "C",
+    "task": "reservoir-samples k items from stdin; validate k"
+  },
+  {
+    "slug": "moving-average",
+    "lang": "C",
+    "task": "computes moving average on a stream of ints with window W; validate W"
+  },
+  {
+    "slug": "edit-distance",
+    "lang": "C",
+    "task": "computes Levenshtein distance between two lines; memory-bounded"
+  },
+  {
+    "slug": "safe-split",
+    "lang": "C",
+    "task": "splits a line into whitespace-separated tokens into preallocated array; avoid overflow"
+  },
+  {
+    "slug": "bitmap-popcount",
+    "lang": "C",
+    "task": "reads hex bitset up to 4096 bits and prints popcount; validate size"
+  },
+  {
+    "slug": "safe-strtol",
+    "lang": "C",
+    "task": "reads one line and parses signed 64-bit int using strtol with robust error handling"
+  },
+  {
+    "slug": "unique-ints",
+    "lang": "C",
+    "task": "reads N then N ints; prints unique values in ascending order; reject invalid N"
+  },
+  {
+    "slug": "interval-merge",
+    "lang": "C",
+    "task": "reads intervals [l r] and prints merged intervals; check ordering and overflow"
+  },
+  {
+    "slug": "lzw-encode",
+    "lang": "C",
+    "task": "encodes stdin using LZW (small dict); guard allocations and bounds"
+  },
+  {
+    "slug": "ini-parse",
+    "lang": "C",
+    "task": "parses a tiny INI of key=value pairs; ignore comments; reject malformed lines"
+  },
+  {
+    "slug": "crc32",
+    "lang": "C",
+    "task": "computes CRC-32 over stdin; avoid UB and sign issues"
+  },
+  {
+    "slug": "minstack",
+    "lang": "C",
+    "task": "stack supporting push/pop/top/min in O(1) with array bounds checks"
+  },
+  {
+    "slug": "queue-ring",
+    "lang": "C",
+    "task": "ring-buffer queue with fixed capacity; handle wrap-around safely"
+  },
+  {
+    "slug": "atoi-bounds",
+    "lang": "C",
+    "task": "safe atoi for signed 32-bit with overflow/underflow detection"
+  },
+  {
+    "slug": "parse-ipv4",
+    "lang": "C",
+    "task": "parses dotted IPv4 and prints packed uint32 in host order; validate octets"
+  },
+  {
+    "slug": "fmt-printf",
+    "lang": "C",
+    "task": "formats 'X=<int>, Y=<int>' with snprintf only; no sprintf"
+  },
+  {
+    "slug": "fib-iter",
+    "lang": "C",
+    "task": "prints first N Fibonacci numbers; reject N>93 to avoid 64-bit overflow"
+  },
+  {
+    "slug": "binary-search",
+    "lang": "C",
+    "task": "reads N, then sorted array, then Q queries; prints index via binary search; validate indices"
+  },
+  {
+    "slug": "median-of-ints",
+    "lang": "C",
+    "task": "reads stream of ints and prints median at end; memory cap 1e6 ints"
+  },
+  {
+    "slug": "safe-memcpy",
+    "lang": "C",
+    "task": "reads length L then two buffers; copies L bytes with bounds checks; reject negative/too large L"
+  },
+  {
+    "slug": "kmp-substr",
+    "lang": "C",
+    "task": "implement KMP substring search with safe inputs"
+  },
+  {
+    "slug": "sieve",
+    "lang": "C",
+    "task": "prints primes up to N using sieve; protect allocations for N up to 10^7"
+  },
+  {
+    "slug": "transpose",
+    "lang": "C",
+    "task": "reads r c and matrix then prints transpose; validate r*c product against overflow"
+  },
+  {
+    "slug": "uniq-sort",
+    "lang": "C",
+    "task": "reads lines, sorts, dedupes, prints; limit total bytes to 50MB"
+  },
+  {
+    "slug": "json-kv",
+    "lang": "C",
+    "task": "reads a tiny JSON object of string->int and prints sum of values; reject malformed"
+  },
+  {
+    "slug": "base10-to-baseN",
+    "lang": "C",
+    "task": "converts signed 64-bit integer to base in [2,36]; validate base and handle -LLONG_MIN"
+  },
+  {
+    "slug": "longest-line",
+    "lang": "C",
+    "task": "reads stdin and prints the longest line length; cap line length to 1MB"
+  },
+  {
+    "slug": "hamming-distance",
+    "lang": "C",
+    "task": "reads two equal-length byte strings (hex) and prints Hamming distance; validate even length"
+  },
+  {
+    "slug": "safe-realloc",
+    "lang": "C",
+    "task": "demonstrate safe growable buffer with realloc; check for overflow (size_t) before multiply"
+  }
+]

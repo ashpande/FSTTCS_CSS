@@ -1,0 +1,35 @@
+{
+  "tasks": [
+    {"slug":"sum-ints","lang":"C","task":"reads N then N integers, prints sum; reject non-numeric and overflow on sum"},
+    {"slug":"csv-stats","lang":"C","task":"reads CSV of signed ints from stdin and prints count,min,max,mean; handle long lines safely"},
+    {"slug":"strfind","lang":"C","task":"reads two lines s and t and prints index of first occurrence of t in s or -1"},
+    {"slug":"uniq-lines","lang":"C","task":"reads up to 100000 newline-terminated lines and prints unique lines in input order; cap memory"},
+    {"slug":"hex-parse","lang":"C","task":"reads hexadecimal string and prints its 64-bit value; validate length and digits"},
+    {"slug":"json-int-array-sum","lang":"C","task":"reads a JSON array of integers on one line and prints sum; reject malformed"},
+    {"slug":"rle-encode","lang":"C","task":"run-length encodes stdin to stdout; avoid integer overflow and handle binary input"},
+    {"slug":"paren-balance","lang":"C","task":"checks if ()[]{} are balanced in a line; ignore other chars"},
+    {"slug":"topk","lang":"C","task":"reads k then N ints and prints top-k largest; use heap; validate k"},
+    {"slug":"trim-and-join","lang":"C","task":"reads two lines, trims ASCII whitespace, prints joined with one space"},
+    {"slug":"safe-copy","lang":"C","task":"reads a line and copies into fixed-size buffer safely; prints length"},
+    {"slug":"wordfreq","lang":"C","task":"tokenize words [a-zA-Z]+ and print top 10 by frequency; stable tie-break"},
+    {"slug":"matrix-mul","lang":"C","task":"reads m n and matrices A(mxn), B(nxk) and prints C; validate bounds and overflow risk"},
+    {"slug":"b64-decode","lang":"C","task":"Base64-decodes stdin to stdout; reject invalid alphabet/padding"},
+    {"slug":"url-decode","lang":"C","task":"URL-decodes a single line and prints it; validate %xx"},
+    {"slug":"rot13","lang":"C","task":"apply ROT13 to stdin to stdout"},
+    {"slug":"itoa-safe","lang":"C","task":"reads a 64-bit signed integer and prints it using a safe conversion without sprintf"},
+    {"slug":"lines-sort","lang":"C","task":"reads up to 100000 lines and prints them sorted lexicographically; guard memory"},
+    {"slug":"dedup-sorted-ints","lang":"C","task":"reads sorted ints and outputs unique values; streaming allowed"},
+    {"slug":"histo-bytes","lang":"C","task":"reads stdin as bytes and prints 256 counts; avoid sign issues"},
+    {"slug":"checksum","lang":"C","task":"reads stdin and prints uint32 additive checksum; avoid overflow UB"},
+    {"slug":"safe-sprintf","lang":"C","task":"format 'name: <s>, age: <d>' safely given two lines"},
+    {"slug":"str-reverse","lang":"C","task":"reads a line and prints reversed; handle UTF-8 as bytes (document limitation)"},
+    {"slug":"stack-queue","lang":"C","task":"implements stack and queue with bounds checks; read ops from stdin"},
+    {"slug":"infix-eval","lang":"C","task":"evaluates simple integer expressions + - * / with parentheses; validate overflow/div0"},
+    {"slug":"dedup-hash","lang":"C","task":"dedup up to 100k integers with open addressing hash; handle collisions safely"},
+    {"slug":"grep-substr","lang":"C","task":"reads pattern then prints lines containing pattern; safe scanning"},
+    {"slug":"csv-split-fields","lang":"C","task":"splits CSV into fields honoring quotes; handle escapes; reject malformed"},
+    {"slug":"args-parse","lang":"C","task":"parses -n <int> -o <path> from argv with error handling"},
+    {"slug":"rand-sample","lang":"C","task":"reservoir-samples k items from stdin; validate k"}
+  ]
+}
+
