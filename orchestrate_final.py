@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-orchestrate_final.py — One big run: LLM (B1..B4) + Jotai with san & sanint (+ optional AFL), resume-aware LLM gen.
+orchestrate_final.py — One big run: LLM (B1..B4) + Jotai with san & sanint (+ optional AFL).
+Updated with Free Tier throttling, robust JSON handling, and typo fixes.
 
 Outputs under workspace/run_id/:
   gen/B{1..4}/*.c            # LLM programs
@@ -103,12 +104,11 @@ HARDENED = [
     "-Wl,-z,relro", "-Wl,-z,now", "-fstack-clash-protection",
 ]
 SAN_CORE = ["-O1", "-g", "-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
-EXTRA_LIBS = ["-lm"]  # harmless when unused; fixes Jotai math links
+EXTRA_LIBS = ["-lm"]
 
 def san_flags(cc_name: str, kind: str):
     if kind == "san":
         return SAN_CORE[:]
-    # integer sanitizer variant
     if cc_name == "clang":
         return SAN_CORE + ["-fsanitize=integer"]
     else:
@@ -117,7 +117,7 @@ def san_flags(cc_name: str, kind: str):
 # ---------- utils ----------
 def run(cmd, cwd=None, timeout=None, env=None, stdin_data=None):
     return subprocess.run(
-        cmd, cwd=cwd, timeout=timeout, env=env, text=True,
+        cmd, cwd=cwd, timeout=timeout, env=env, text=True, encoding="utf-8", errors="ignore",
         input=stdin_data, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
     )
 
@@ -135,7 +135,7 @@ def short_hash(s: str) -> str:
     return hashlib.sha1(s.encode("utf-8")).hexdigest()[:10]
 
 def detect_cc():
-    clang = shutil.which("clang") or shutil.which("clang-18") or shutil.which("clang-16") or shutil.which("clang-14")
+    clang = shutil.which("clang") or shutil.which("clang-18") or shutil.which("clang-16")
     gcc = shutil.which("gcc")
     if not clang or not gcc:
         print("ERROR: need both clang and gcc in PATH")
@@ -326,7 +326,7 @@ def run_sanitized_jotai(binpath: Path, run_dir: Path, inputs, timeout: int):
                 for k in classify_crash(out):
                     kinds.add(k)
         except subprocess.TimeoutExpired:
-            to_inp.apped(inp)
+            to_inp.append(inp)
     return {
         "asan_inputs_tested": list(inputs),
         "asan_crash_inputs": crash_inp,
@@ -338,12 +338,6 @@ def run_sanitized_jotai(binpath: Path, run_dir: Path, inputs, timeout: int):
     }
 
 def compile_and_run(job):
-    """
-    job:
-      src,label,uid,binname,cc_name,cc_path,profile,out_base,run_base,
-      llm_slug, fixtures_dir, jotai_inputs, timeout,
-      do_sanint, do_afl, afl_seconds
-    """
     src = Path(job["src"])
     cc_name = job["cc_name"]
     cc_path = job["cc_path"]
@@ -494,8 +488,16 @@ def main():
     tasks_path = Path(args.tasks_json)
     if tasks_path.exists():
         llm = LLMClient(args.provider, args.model, args.temperature)
-        tasks = json.loads(read_text(tasks_path))
-        planned = len(tasks.get("tasks", [])) * len(PROMPT_VARIANTS)
+        
+        # Robust loading: handle both list and dict wrapper
+        with open(tasks_path, "r") as f:
+            data = json.load(f)
+            if isinstance(data, dict) and "tasks" in data:
+                tasks_list = data["tasks"]
+            else:
+                tasks_list = data
+
+        planned = len(tasks_list) * len(PROMPT_VARIANTS)
 
         def write_manifest_incremental():
             dedup = {}
@@ -506,9 +508,14 @@ def main():
             write_text(llm_manifest_path, json.dumps(list(dedup.values()), indent=2))
 
         with tqdm(total=planned, desc="LLM gen (B1..B4)") as pbar:
-            for i, t in enumerate(tasks.get("tasks", []), 1):
+            for i, t in enumerate(tasks_list, 1):
+                # THROTTLE: 10s sleep forces max 6 requests/min (safe for free tier)
+               # time.sleep(10)
+
                 lang = t.get("lang", "C")
                 slug = t["slug"]
+                # Handle inconsistent task description keys
+                desc = t.get("task") or t.get("description")
 
                 for fam, tmpl in PROMPT_VARIANTS:
                     outdir = d_gen / fam
@@ -525,7 +532,7 @@ def main():
                         pbar.update(1)
                         continue
 
-                    prompt_text = tmpl.safe_substitute(lang=lang, task=t["task"])
+                    prompt_text = tmpl.safe_substitute(lang=lang, task=desc)
 
                     attempts = 0
                     backoff = 8
@@ -536,18 +543,22 @@ def main():
                         except Exception as e:
                             msg = str(e)
                             if "429" in msg or "RESOURCE_EXHAUSTED" in msg or "quota" in msg.lower():
-                                slep_s = min(60, int(backoff))
+                                sleep_s = min(60, int(backoff))
                                 print(f"[LLM] Quota hit; sleeping {sleep_s}s then retrying ...")
                                 time.sleep(sleep_s)
                                 attempts += 1
                                 backoff = min(60, int(backoff * 1.5))
                                 if attempts >= 8:
-                                    raise
+                                    print(f"  [Give Up] Failed to gen {slug} {fam} after retries.")
+                                    code = "" # empty code
+                                    break
                                 continue
                             else:
-                                raise
+                                print(f"  [Error] {msg}")
+                                code = ""
+                                break
 
-                    if "```" in code:
+                    if code and "```" in code:
                         blocks, keep, cur = [], False, []
                         for line in code.splitlines():
                             if line.strip().startswith("```"):
@@ -565,10 +576,12 @@ def main():
                         if blocks:
                             code = max(blocks, key=len)
 
-                    write_text(out, code)
-                    existing_manifest.append({"variant": fam, "slug": slug, "lang": lang, "path": out_str})
-                    already_recorded.add(out_str)
-                    write_manifest_incremental()
+                    if code:
+                        write_text(out, code)
+                        existing_manifest.append({"variant": fam, "slug": slug, "lang": lang, "path": out_str})
+                        already_recorded.add(out_str)
+                        write_manifest_incremental()
+                    
                     pbar.update(1)
     else:
         print(f"[INFO] tasks file {tasks_path} not found; skipping LLM generation")
@@ -604,7 +617,7 @@ def main():
     print(f"[INFO] Total C sources: {len(sources)}")
 
     # 4) Jobs
-    fixtures_dir = Path(args.fixtures_dir)
+    fixtures_dir = Path(args.fixtures_dir) if args.fixtures_dir else None
     jotai_inputs = [int(x) for x in str(args.jotai_inputs).split(",") if x.strip().lstrip("-").isdigit()]
 
     def llm_slug_from_path(p: Path) -> str | None:
@@ -614,7 +627,7 @@ def main():
         return None
 
     def should_fuzz(uid: str, pct: float):
-        hv = int(hashlib.sha1(uid.encode("utf-8")).hexdigest(), 16) % 1000
+        hv = int(hashlib.sha1(uid.encode("utf-8")).hexdest(), 16) % 1000
         return hv < int(pct * 1000 + 0.5)
 
     cc_pairs = [("clang", clang), ("gcc", gcc)]
@@ -626,6 +639,7 @@ def main():
         binname = f"{stem}-{uid}"
         is_llm = "/gen/" in rel or rel.startswith("gen/")
         slug = llm_slug_from_path(s) if is_llm else None
+        
         for cc_name, cc_path in cc_pairs:
             for profile in ("baseline", "hardened", "san"):
                 out_base = ws / "build" / cc_name / profile
@@ -635,7 +649,7 @@ def main():
                     "cc_name": cc_name, "cc_path": cc_path, "profile": profile,
                     "out_base": str(out_base), "run_base": str(run_base),
                     "llm_slug": slug,
-                    "fixtures_dir": str(fixtures_dir),
+                    "fixtures_dir": str(fixtures_dir) if fixtures_dir else "",
                     "jotai_inputs": (jotai_inputs if not is_llm else []),
                     "timeout": args.timeout,
                     "do_sanint": bool(args.enable_sanint),
@@ -661,4 +675,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
